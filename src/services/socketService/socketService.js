@@ -1,4 +1,4 @@
-const Message = require("../../models/messageModel");
+const Message = require("../../modules/message/models/messageModel");
 
 module.exports = (io) => {
     const activeUsers = new Set();

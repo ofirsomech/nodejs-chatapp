@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Message = require('./modules/message/models/messageModel');
 const {Server} = require("socket.io");
 const messageRouter = require("./modules/message/routes/messageRoutes");
-const socketService = require('./modules/message/services/socketService/socketService');
+const socketService = require('./services/socketService/socketService');
 const cors = require("cors");
 
 // App setup
