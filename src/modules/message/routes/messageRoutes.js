@@ -1,11 +1,16 @@
 const express = require('express');
-const router = express.Router();
-const messageController = require('../controllers/messageController');
+const messageController = require("../controllers/messageController");
+
+
+module.exports = (io) => {
+    const messageRouter = express.Router();
+    const messageController = require('../controllers/messageController');
 
 // GET route for retrieving all messages
-router.get('/', messageController.getAllMessages);
+    messageRouter.get('/', messageController.getAllMessages);
 
 // POST route for creating a new message
-router.post('/', messageController.createMessage);
+    messageRouter.post('/', (req, res) => messageController.createMessage(req, res, io));
 
-module.exports = router;
+    return messageRouter;
+};

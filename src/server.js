@@ -3,12 +3,20 @@ const socket = require('socket.io');
 const mongoose = require('mongoose');
 const Message = require('./modules/message/models/messageModel');
 const {Server} = require("socket.io");
+const messageRouter = require("./modules/message/routes/messageRoutes");
+const socketService = require('./modules/message/services/socketService/socketService');
+const cors = require("cors");
 
 // App setup
 const app = express();
 
-// Use static files instead of routing
-app.use(express.static('public'));
+// Enable CORS for all origins
+app.use(cors());
+
+// Parse JSON and URL-encoded bodies
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 
 // Set the port
 const port = process.env.PORT || 4000;
@@ -35,40 +43,42 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
+app.use("/chat", messageRouter(io));
 
-io.on("connection", async (socket) => {
-    console.log("We are connected");
-
-    const messages = await Message.find({});
-    if (messages) {
-        io.emit("messages", messages);
-    }
-
-    socket.on("chat", async (chat) => {
-        if (chat) {
-            console.log(chat);
-
-            const newMessage = {
-                name: chat.name,
-                message: chat.message,
-                avatar: chat.avatar,
-                timestamp: Date.now(),
-            };
-
-            const message = new Message(newMessage);
-            await message.save();
-
-            const messages = await Message.find({});
-            io.emit("messages", messages);
-        } else {
-            return;
-        }
-    });
-
-    socket.on("disconnect", () => {
-        console.log("disconnected");
-    });
-});
+socketService(io)
+// io.on("connection", async (socket) => {
+//     console.log("We are connected");
+//
+//     const messages = await Message.find({});
+//     if (messages) {
+//         io.emit("messages", messages);
+//     }
+//
+//     socket.on("chat", async (chat) => {
+//         if (chat) {
+//             console.log(chat);
+//
+//             const newMessage = {
+//                 name: chat.name,
+//                 message: chat.message,
+//                 avatar: chat.avatar,
+//                 timestamp: Date.now(),
+//             };
+//
+//             const message = new Message(newMessage);
+//             await message.save();
+//
+//             const messages = await Message.find({});
+//             io.emit("messages", messages);
+//         } else {
+//             return;
+//         }
+//     });
+//
+//     socket.on("disconnect", () => {
+//         console.log("disconnected");
+//     });
+// });
 
 // Handle server errors
 server.on('error', err => {
