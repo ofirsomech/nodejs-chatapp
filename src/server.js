@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { Server } = require("socket.io");
 const messageRouter = require("./modules/message/routes/messageRoutes");
 const socketService = require("./services/socketService/socketService");
+require("dotenv").config();
 const cors = require("cors");
 
 // App setup
@@ -32,6 +33,7 @@ const io = new Server(server, {
 
 // Connect to MongoDB
 const dbUrl = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017";
+console.log("dbUrl", dbUrl);
 mongoose.connect(`${dbUrl}/chat`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

@@ -18,7 +18,7 @@ const createMessage = async (req, res, io) => {
 
   try {
     const savedMessage = await newMessage.save();
-    console.log(savedMessage);
+    console.log("savedMessage", savedMessage);
     const messages = await Message.find().sort({ createdAt: 1 });
     io.emit("messages", messages);
     res.status(201).json(savedMessage);
